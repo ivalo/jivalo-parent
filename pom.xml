@@ -4,7 +4,7 @@
   <!-- The Basics -->
   <groupId>jivalo.parent</groupId>
   <artifactId>parent</artifactId>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
@@ -256,7 +256,7 @@
   <scm>
     <connection>${localGitUrl}/jivalo-parent</connection>
     <developerConnection>${localGitUrl}/jivalo-parent</developerConnection>
-    <tag>parent-1.0</tag>
+    <tag>HEAD</tag>
     <url>https://github.com/ivalo/jivalo-parent</url>
   </scm>
   
