@@ -4,16 +4,15 @@
   <!-- The Basics -->
   <groupId>jivalo.parent</groupId>
   <artifactId>parent</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <classPathPrefix>lib/</classPathPrefix>
-    <jdkVersion>1.7</jdkVersion>
     <mavenUrlDist>http://localhost:8081/nexus/content/repositories</mavenUrlDist>
     <localGitUrl>scm:git:file:///${user.home}/git</localGitUrl>
+    <fluidoSkinVersion>1.3.0</fluidoSkinVersion>
   </properties>
 
   <!-- Build Settings -->
@@ -41,6 +40,56 @@
           </toolchains>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <reportPlugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-project-info-reports-plugin</artifactId>
+              <configuration>
+                <dependencyDetailsEnabled>true</dependencyDetailsEnabled>
+                <dependencyLocationsEnabled>true</dependencyLocationsEnabled>
+                <anonymousConnection>scm:git:https://github.com/ivalo/jivalo-parent.git</anonymousConnection>
+                <developerConnection>scm:git:https://github.com/ivalo/jivalo-parent.git</developerConnection>
+              </configuration>
+              <!-- simpler configuration without reportSets available for usual cases -->
+              <reports>
+                <report>dependencies</report>
+                <report>dependency-convergence</report>
+                <report>dependency-info</report>
+                <report>issue-tracking</report>
+                <report>project-team</report>
+                <report>plugin-management</report>
+                <report>scm</report>
+                <report>summary</report>
+              </reports>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-changes-plugin</artifactId>
+              <reportSets>
+                <reportSet>
+                  <reports>
+                    <report>github-report</report>
+                  </reports>
+                </reportSet>
+              </reportSets>
+            </plugin>
+          </reportPlugins>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <configuration>
+          <version>1.0</version>
+          <issueManagementSystems>
+            <issueManagementSystem>GitHub</issueManagementSystem>
+          </issueManagementSystems>
+        </configuration>
+      </plugin>
     </plugins>
     
     <pluginManagement>
@@ -55,12 +104,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>2.5.1</version>
-          <configuration>
-            <verbose>true</verbose>
-            <fork>false</fork>
-            <source>${jdkVersion}</source>
-            <target>${jdkVersion}</target>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -70,7 +113,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>2.12</version>
+          <version>2.12.4</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -86,18 +129,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
           <version>3.1</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.apache.maven.doxia</groupId>
-              <artifactId>doxia-module-confluence</artifactId>
-              <version>1.3</version>
-            </dependency>
-          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.12</version>
+          <version>2.12.4</version>
         </plugin>
         <!-- Packaging types / tools plugins -->
         <plugin>
@@ -112,15 +148,34 @@
             </archive>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-ejb-plugin</artifactId>
+          <version>2.3</version>
+          <configuration>
+            <archive>
+              <manifest>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              </manifest>
+            </archive>
+            <ejbVersion>3.1</ejbVersion>
+          </configuration>
+        </plugin>
 
         <!-- Reporting plugins -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-changes-plugin</artifactId>
+          <version>2.9-SNAPSHOT</version>
+          <configuration>
+            <!--includeOpenIssues>false</includeOpenIssues-->
+            <onlyCurrentVersion>true</onlyCurrentVersion>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>2.8.1</version>
-          <configuration>
-            <source>${jdkVersion}</source>
-          </configuration>
         </plugin>
         <plugin>
          <groupId>org.apache.maven.plugins</groupId>
@@ -153,6 +208,8 @@
             <pushChanges>false</pushChanges>
             <localCheckout>true</localCheckout>
             <autoVersionSubmodules>true</autoVersionSubmodules>
+            <tagNameFormat>@{project.version}</tagNameFormat>
+            <releaseProfiles>optimize</releaseProfiles>
           </configuration>
         </plugin>
         <plugin>
@@ -225,16 +282,9 @@
 
   <licenses>
     <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>manual</distribution>
-      <comments>A business-friendly OSS license</comments>
-    </license>
-    <license>
       <name>Eclipse Public License - v 1.0</name>
       <url>http://www.eclipse.org/org/documents/epl-v10.html</url>
       <distribution>manual</distribution>
-      <comments>A business-friendly OSS license</comments>
     </license>
   </licenses>
   
@@ -276,11 +326,11 @@
       <name>Maven project site</name>
       <url>file:///tmp/release-site</url>
     </site-->
-  </distributionManagement>    
+  </distributionManagement>
   
   <profiles>
     <profile>
-      <id>release</id>
+      <id>optimize</id>
       <build>
         <pluginManagement>
           <plugins>
@@ -297,4 +347,5 @@
       </build>
     </profile>
   </profiles>  
+  
 </project>
